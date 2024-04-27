@@ -1,0 +1,44 @@
+Connected to Bbox-7DF98A60
+IP address: 192.168.1.14
+MDNS responder started
+HTTP server started
+Moisture = 0%
+- Code de réponse du serveur : 404
+
+
+
+- Réponse du serveur : 
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+        <head>
+                <title>404 - Not Found</title>
+        </head>
+        <body>
+                <h1>404 - Not Found</h1>
+                <script type="text/javascript" src="//obj.ac.bcon.ecdns.net/ec_tpm_bcon.js"></script>
+        </body>
+</html>
+
+Moisture = 0%
+- Code de réponse du serveur : 404
+
+
+
+- Réponse du serveur : 
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+        <head>
+                <title>404 - Not Found</title>
+        </head>
+        <body>
+                <h1>404 - Not Found</h1>
+                <script type="text/javascript" src="//obj.ac.bcon.ecdns.net/ec_tpm_bcon.js"></script>
+        </body>
+</html>
+
+Moisture = 0%
+- Code de réponse du serveur : 404
