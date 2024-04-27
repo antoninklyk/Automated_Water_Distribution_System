@@ -43,47 +43,55 @@ void handleNotFound() {
   Serial.print("End!");
 }
 
-void sendData(uint8_t data) //idéalement il faudrait une requete HTTP Post (Créer ressource) et des requetes HTTP PUT (Update)
-{   
-  if (WiFi.status() == WL_CONNECTED) { // Verification du Wifi, sinon message Serial 
+void sendData(uint8_t dataToSend) //idéalement il faudrait une requete HTTP Post (Créer ressource) et des requetes HTTP PUT (Update)
+{  
+  // Verif Connexion Physique au WiFi
+  if (WiFi.status() == WL_CONNECTED) {
+  Serial.println("WiFi Connection Setup Correctly !\n\n\n");
 
-    HTTPClient httpclient;
-    
-    //Begin permet de parser url du server pour recup tt les params importants, et les donner au client
-    //if(httpclient.begin(wificlient, server.urlDecode, uint16_t port, String uri = "/", bool https = false);)
-    //httpclient.begin(serverUrl);
 
-    //Constitution de la requete HTTP Payload qu'on va envoyer avec la data
-    //Entete
-    httpclient.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    //Body avec Data
-    uint8_t dataToSend = data; 
-    String postData = "data=" + String(dataToSend); //contenu de la requete que l'on veut envoyer
+    //Verif que le Client est bien connecté au Server Setup précédemment
+    uint8_t responseCode = client.connected();
 
-    //Analyse reponse du server
-    int responseCode = httpclient.POST(postData);
-    Serial.print("- Code de réponse du serveur : ");
-    Serial.println(responseCode);
-    // Vérifier la réponse du serveur
-    if (responseCode > 0) {
-  
-      String response = httpclient.getString();
-      Serial.println("\n\n\n- Réponse du serveur : ");
-      Serial.println(response);
+    if(responseCode){
+
+      //Serial.println("Client is writing ...");
+      size_t isWriting = client.write(dataToSend);
+
+      //Constitute Body of the Request (Payload) with the data
+      String postData = "data=" + String(dataToSend);
+
+
+      if(isWriting){
+        
+        // Send Header to Server
+        server.sendHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        
+        //Analyse Reponse du Server
+        //server.sendContent(postData); //POST
+
+
+        server.send(200, "text/plain", postData);
+        Serial.print("Data correctly Sended to the Server\n\n\n");
+
+      }else{
+        
+        Serial.print("Data NOT correctly writed in the Server");
+
+      }
 
     } else {
 
-      Serial.print("Erreur lors de la requête HTTP : ");
+      Serial.print("Erreur lors de la connexion au Server : ");
       Serial.println(responseCode);
 
     }
 
-    //Fin de la requete du client
-    httpclient.end();
+  } else {
 
-    } else {
+  Serial.println("Erreur de connexion au réseau WiFi");
 
-    Serial.println("Erreur de connexion au réseau WiFi");
   }
 }
 
@@ -142,13 +150,13 @@ void setup(void){
     Serial.print(".");
   }
   Serial.println("");
-  Serial.print("HTTP Client Connected !\n\n\n");
+  Serial.print("HTTP Client Connected to the Server !\n\n\n");
 
 }
 
 void loop(void){
   sensor_analog = analogRead(sensor_pin); // read the data
-  humidity = (((sensor_analog/4095.00) * 100));
+  humidity = (((sensor_analog/4095.00) * 100)+40);
   Serial.print("Moisture = ");
   Serial.print(humidity);  /* Print Temperature on the serial window */
   Serial.println("%");
@@ -157,5 +165,5 @@ void loop(void){
 
   sendData(humidity);
 
-  delay(1000);              /* Wait for 1000mS */
+  delay(10000);              /* Wait for 1000mS */
 }
