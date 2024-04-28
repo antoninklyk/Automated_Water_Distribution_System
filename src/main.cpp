@@ -3,8 +3,9 @@ la mesure de l'humiditié par le sensor toutes les 1 s */
 
 #include <Arduino.h>
 #include <HTTPClient.h>
-#include <Client.h>
 #include <WiFi.h>
+#include <WiFiClient.h>
+#include <WiFiClientSecure.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
 
@@ -13,8 +14,8 @@ uint8_t sensor_analog = 0;
 uint8_t humidity = 0;
 const int sensor_pin = 35;  /* Soil moisture sensor O/P pin */
 
-const char *ssid = "Bbox-7DF98A60";
-const char *password = "c7TwF7Sugjy2PzRaaf";
+const char *ssid = "";
+const char *password = "";
 //const char *serverUrl = "http://example.com/api"; // URL du serveur
 
 WebServer server(80);
@@ -43,7 +44,7 @@ void handleNotFound() {
   Serial.print("End!");
 }
 
-void sendData(uint8_t dataToSend) //idéalement il faudrait une requete HTTP Post (Créer ressource) et des requetes HTTP PUT (Update)
+void clientSendData(uint8_t dataToSend) //idéalement il faudrait une requete HTTP Post (Créer ressource) et des requetes HTTP PUT (Update)
 {  
   // Verif Connexion Physique au WiFi
   if (WiFi.status() == WL_CONNECTED) {
@@ -51,18 +52,32 @@ void sendData(uint8_t dataToSend) //idéalement il faudrait une requete HTTP Pos
 
 
     //Verif que le Client est bien connecté au Server Setup précédemment
-    uint8_t responseCode = client.connected();
+    int responseCode = client.connect(WiFi.localIP(),80);
 
     if(responseCode){
 
+      Serial.print("Successfully connected to Server !");
+      
+      // NO WRITE ON CLIENT BUT PRINT
       //Serial.println("Client is writing ...");
-      size_t isWriting = client.write(dataToSend);
+      //size_t isWriting = client.write(dataToSend);
 
-      //Constitute Body of the Request (Payload) with the data
+      // Création de la requête HTTP POST
       String postData = "data=" + String(dataToSend);
+      client.println("GET / http://" + String(WiFi.localIP()));
+      client.println(":80 HTTP/1.1"); // Remplacez "/votre_ressource" par le chemin de votre ressource sur le serveur
+      client.println("Host: " + String(WiFi.localIP()));
+      client.println("Content-Type: application/x-www-form-urlencoded");
+      client.println("Content-Length: " + String(postData.length()));
+      client.println();
+      client.println(postData);
+      delay(10);
+
+            Serial.print("Successfully connected to Server !");
 
 
-      if(isWriting){
+
+      /* if(isWriting){
         
         // Send Header to Server
         server.sendHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -79,7 +94,7 @@ void sendData(uint8_t dataToSend) //idéalement il faudrait une requete HTTP Pos
         
         Serial.print("Data NOT correctly writed in the Server");
 
-      }
+      } */
 
     } else {
 
@@ -95,10 +110,10 @@ void sendData(uint8_t dataToSend) //idéalement il faudrait une requete HTTP Pos
   }
 }
 
-void receiveData() //HTTP GET
+void serverReceiveData(String data) //HTTP GET
 {
-  if(server.hasArg("humidity")){
-    String donnee =server.arg("humidity");
+  if(server.hasArg(data)){
+    String donnee =server.arg(data);
     Serial.print("donnée reçue : ");
     Serial.print(donnee);
     server.send(200, "text/plain", "Données reçues avec succès");
@@ -163,7 +178,12 @@ void loop(void){
 
   server.handleClient();
 
-  sendData(humidity);
+  clientSendData(humidity);
+
+  delay(1000);              /* Wait for 1000mS */
+
+
+  serverReceiveData("humidity");
 
   delay(10000);              /* Wait for 1000mS */
 }
