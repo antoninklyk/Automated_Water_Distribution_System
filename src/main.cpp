@@ -13,7 +13,7 @@ uint8_t humidity = 0;
 const int sensor_pin = 35;  /* Soil moisture sensor O/P pin */
 
 WiFiServer server(80);
-WiFiClient client;
+HTTPClient httpclient;
 const char* ssid = "antoniPhone";
 const char* password = "123456789";
 
@@ -40,9 +40,17 @@ void setup(void){
   Serial.println(WiFi.localIP());
   Serial.println("WiFi Setup Done !\n\n\n");
 
+  // SERVER SETUP //
+  server.begin();
+
 }
 
 void loop(void){
+
+  // Listen for incoming clients ???
+  //WiFiClient client = server.available();
+
+  // Collect Data from Sensor
   sensor_analog = analogRead(sensor_pin); // read the data
   humidity = (((sensor_analog/4095.00) * 100)+40);
   Serial.print("Moisture = ");
@@ -57,7 +65,7 @@ void loop(void){
 
       //Creation et configuration Client
       HTTPClient httpclient;
-      String serverPath = serverUrl + String("???humidity=50%");
+      String serverPath = String("???humidity=50%");
       httpclient.begin(serverPath);
       int httpResponseCode = httpclient.GET();
 
