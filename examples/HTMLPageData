@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Humidity Data</title>
+    <style>
+        /* Style pour l'encadré */
+        .encadre {
+            border: 2px solid #000;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Encadré avec la donnée humidity -->
+    <div class="encadre">
+        <!-- Donnée humidity -->
+        <p>Humidity: <span id="humidityValue">...</span></p>
+    </div>
+
+    <!-- JavaScript pour mettre à jour la donnée humidity -->
+    <script>
+        // Supposons que vous avez la valeur de humidity stockée dans une variable JavaScript nommée humidityValue
+        var humidityValue = 50; // Exemple de valeur d'humidité (vous pouvez la remplacer par la valeur réelle)
+
+        // Mettre à jour la valeur de humidity dans le span avec l'ID "humidityValue"
+        document.getElementById("humidityValue").textContent = humidityValue;
+    </script>
+</body>
+</html>
