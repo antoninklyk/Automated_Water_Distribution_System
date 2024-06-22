@@ -6,6 +6,6 @@
 #include "string.h"
 
 void network_setup();
-void client_send_data(String dataToSend);
+void http_send_data(String dataToSend);
 
 #endif

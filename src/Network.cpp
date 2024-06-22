@@ -9,7 +9,6 @@ const char* password = "c7TwF7Sugjy2PzRaaf"; //123456789
 String http_request_header = "";
 
 //Time 
-int current_time = millis();
 int last_time = 0;
 int time_to_wait = 5000;
 
@@ -34,13 +33,13 @@ void network_setup()
   server.begin();
 }
 
-void client_send_data(String dataToSend)
+void http_send_data(String dataToSend)
 {
     // Listener for incoming clients
   WiFiClient client = server.available();
   
   if(client){ //if a new client connects (On listener)
-    current_time = millis();
+    int current_time = millis();
     last_time = current_time;
     Serial.println("New Client");
     String current_line = ""; // make a String to hold incoming data from the client
